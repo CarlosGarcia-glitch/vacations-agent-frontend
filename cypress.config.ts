@@ -2,7 +2,7 @@ import { defineConfig } from 'cypress';
 
 export default defineConfig({
   e2e: {
-    baseUrl: 'http://localhost:5173/isol-vacations-chatbot-frontend/',
+    baseUrl: 'http://localhost:5173/vacations-agent-frontend/',
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },

@@ -38,5 +38,5 @@ export default defineConfig({
       usePolling: true,
     },
   },
-  base: '/isol-vacations-chatbot-frontend/'
+  base: '/vacations-agent-frontend/'
 });
