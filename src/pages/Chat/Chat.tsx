@@ -37,12 +37,17 @@ const Chat = () => {
       try {
         const { session_id } = await chatService.createChatSession();
         localStorage.setItem('sessionId', session_id);
-        setChatHistory([
-          {
-            message: `¡Hola, ${user?.given_name}! ¿Cómo puedo ayudarte a planear tu próximo día de vacaciones?`,
-            role: 'bot',
-          },
-        ]);
+        try {
+          await chatService.sendMessage('');
+          setChatHistory([
+            {
+              message: `¡Hola, ${user?.given_name}! ¿Cómo puedo ayudarte a planear tu próximo día de vacaciones?`,
+              role: 'bot',
+            },
+          ]);
+        } catch (error) {
+          throw new Error('Error sending message to agent');
+        }
       } catch (err) {
         setAlert(true, 'error', t.errors.init_chat.alert);
         setChatHistory([
