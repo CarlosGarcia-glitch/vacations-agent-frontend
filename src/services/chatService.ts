@@ -1,10 +1,8 @@
-// services/chatService.ts
 import api from './axiosInstance';
 
 interface SessionResponse {
   session_id: string;
 }
-
 
 const getConversationId = (): string | null => {
   return localStorage.getItem('conversationId');
@@ -56,7 +54,7 @@ export const chatService = {
 
   async createChatSession(): Promise<SessionResponse> {
     const response = await api.post('/chat/session');
-    return response.data
+    return response.data;
   },
 
   async sendMessageToAgent(inputMessage: string, file: File | null) {
@@ -85,7 +83,38 @@ export const chatService = {
   async sendMessage(message: string): Promise<string> {
     const sessionId = getSessionId();
     if (!sessionId) throw new Error('No session ID found.');
-    const response = await api.post(`/chat/session/${sessionId}/message`, { text: message });
-    return response.data.messages[0]
+    const response = await api.post(`/chat/session/${sessionId}/message`, {
+      text: message,
+    });
+    return response.data.messages[0];
+  },
+
+  async sendMessageStream(
+    message: string,
+    onChunk: (chunk: string) => void,
+  ): Promise<void> {
+    const sessionId = getSessionId();
+    if (!sessionId) throw new Error('No session ID found.');
+
+    const response = await fetch(`/chat/session/${sessionId}/message/stream`, {
+      method: 'POST',
+      body: JSON.stringify({ text: message }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    const reader = response.body?.getReader();
+    if (!reader) return;
+
+    const decoder = new TextDecoder();
+    let done = false;
+
+    while (!done) {
+      const { value, done: readerDone } = await reader.read();
+      if (value) {
+        const chunk = decoder.decode(value, { stream: true });
+        onChunk(chunk);
+      }
+      done = readerDone;
+    }
   },
 };

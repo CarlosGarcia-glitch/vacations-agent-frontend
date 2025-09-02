@@ -1,4 +1,3 @@
-import { chatService } from '@/services/chatService';
 import { TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import {
@@ -6,6 +5,7 @@ import {
   useAppContext,
   useTranslations,
 } from '../contexts/AppContext';
+import { chatService } from '@/services/chatService';
 
 type ChatbotFormProps = {
   isThinking: boolean;
@@ -22,35 +22,54 @@ const ChatbotForm = ({ isThinking, setIsThinking }: ChatbotFormProps) => {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setIsThinking(true);
     const userMessage = inputValue.trim();
+    if (!userMessage) return;
+
+    setIsThinking(true);
+
     setChatHistory((history) => [
       ...history,
       { role: 'user', message: userMessage },
     ]);
 
-    try {
-      const botResponse = await chatService.sendMessage(userMessage);
+    setInputValue('');
 
-      setChatHistory((history) => [
-        ...history,
-        { role: 'bot', message: botResponse },
-      ]);
+    try {
+      await chatService.sendMessageStream(userMessage, (chunk) => {
+        setChatHistory((history) => {
+          const lastMsg = history[history.length - 1];
+
+          if (lastMsg?.role === 'bot' && lastMsg.streaming) {
+            return [
+              ...history.slice(0, -1),
+              { ...lastMsg, message: lastMsg.message + chunk },
+            ];
+          } else {
+            return [
+              ...history,
+              { role: 'bot', message: chunk, streaming: true },
+            ];
+          }
+        });
+      });
+
+      setChatHistory((history) => {
+        const lastMsg = history[history.length - 1];
+        if (lastMsg?.role === 'bot' && lastMsg.streaming) {
+          return [...history.slice(0, -1), { ...lastMsg, streaming: false }];
+        }
+        return history;
+      });
     } catch (error) {
       console.error('Error sending message to agent:', error);
       setAlert(true, 'error', t.errors.ask_agent.alert);
       setChatHistory((history) => [
         ...history,
-        {
-          role: 'bot',
-          message: t.errors.ask_agent.chat,
-        },
+        { role: 'bot', message: t.errors.ask_agent.chat },
       ]);
     } finally {
       setIsThinking(false);
     }
-
-    setInputValue('');
   };
 
   useEffect(() => {
@@ -78,17 +97,6 @@ const ChatbotForm = ({ isThinking, setIsThinking }: ChatbotFormProps) => {
             if (form) {
               form.requestSubmit();
             }
-          } else if (
-            (e.key === 'Enter' && e.ctrlKey) ||
-            (e.key === 'Enter' && e.shiftKey)
-          ) {
-            // Add new line for Ctrl+Enter or Alt+Enter
-            const target = e.target as HTMLInputElement;
-            const start = target.selectionStart ?? 0;
-            const end = target.selectionEnd ?? 0;
-            const newValue =
-              inputValue.substring(0, start) + inputValue.substring(end);
-            setInputValue(newValue);
           }
         }}
         value={isThinking ? '' : inputValue}

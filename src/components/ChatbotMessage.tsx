@@ -7,6 +7,7 @@ export interface IChat {
   role: 'bot' | 'user';
   message: string;
   isLastMsg?: boolean;
+  streaming?: boolean;
 }
 
 const ChatbotMessage = ({ role, message, isLastMsg }: IChat) => {
