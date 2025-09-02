@@ -86,6 +86,6 @@ export const chatService = {
     const sessionId = getSessionId();
     if (!sessionId) throw new Error('No session ID found.');
     const response = await api.post(`/chat/session/${sessionId}/message`, { text: message });
-    return response.data.messages[0]
+    return response.data.messages.join('\n')
   },
 };
