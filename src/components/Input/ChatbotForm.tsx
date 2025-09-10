@@ -5,7 +5,8 @@ import {
   useAlert,
   useAppContext,
   useTranslations,
-} from '../contexts/AppContext';
+} from '../../contexts/AppContext';
+import './Input.scss'
 
 type ChatbotFormProps = {
   isThinking: boolean;
