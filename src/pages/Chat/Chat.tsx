@@ -5,16 +5,17 @@ import {
   useTranslations,
 } from '../../contexts/AppContext';
 
-import ChatbotForm from '../../components/ChatbotForm';
-import ChatbotMessage, { IChat } from '../../components/ChatbotMessage';
+import ChatbotForm from '../../components/Input/ChatbotForm';
+import ChatbotMessage, { IChat } from '../../components/Message/ChatbotMessage';
 import ChatbotIcon from '../../components/icons/ChatbotIcon';
 import { LoginOutlined } from '@mui/icons-material';
 import { CircularProgress } from '@mui/material';
 import { chatService } from '@/services/chatService';
 import ChatbotThinking from '@/components/ChatbotThinking/ChatbotThinking';
-import './Chat.scss';
+// import './Chat.scss';
 import AuthService from '@/services/authService';
 import { useNavigate } from 'react-router-dom';
+import Styles from './_Chat.module.scss';
 
 const Chat = () => {
   const t = useTranslations();
@@ -92,15 +93,15 @@ const Chat = () => {
   };
 
   return (
-    <div className="container">
-      <div className="chatbot-popup">
+    <div className={Styles.container}>
+      <div className={Styles.chat}>
         {/* Chatbot Header */}
-        <div className="chat-header">
-          <div className="header-info">
+        <div className={Styles.chat_header}>
+          <div className={Styles.header_info}>
             <ChatbotIcon />
-            <h2 className="logo-text">ISOL Agent</h2>
+            <h2 className={Styles.logo_text}>ISOL Agent</h2>
           </div>
-          <div className="buttons-header">
+          <div className={Styles.buttons_header}>
             <div>
               <button
                 onClick={toggleLanguage}
@@ -121,9 +122,9 @@ const Chat = () => {
         </div>
 
         {/* Chatbot Body */}
-        <div className="chat-body" ref={chatBodyRef}>
+        <div className={Styles.chat_body} ref={chatBodyRef}>
           {loading ? (
-            <div className="chat-loading">
+            <div className={Styles.chat_loading}>
               <CircularProgress />
             </div>
           ) : (
@@ -142,7 +143,7 @@ const Chat = () => {
         </div>
 
         {/* Chatbot Footer */}
-        <div className="chat-footer">
+        <div className={Styles.chat_footer}>
           <ChatbotForm isThinking={isThinking} setIsThinking={setIsThinking} />
         </div>
       </div>
