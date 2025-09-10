@@ -1,0 +1,41 @@
+.message {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  
+  .message-text {
+    padding: 12px 16px;
+    max-width: 75%;
+    white-space: pre-line;
+    font-size: 0.95rem;
+  }
+  
+  .bot-message {
+    svg {
+      height: 35px;
+      width: 35px;
+      padding: 6px;
+      flex-shrink: 0;
+      background: $primary-color;
+      fill: $contrast;
+      border-radius: 50%;
+    }
+    .message-text {
+      background: $secondary-color;
+      border-radius: $border-radius $border-radius $border-radius 4px;
+      color: $primary-text;
+    }
+  }
+  
+  .user-message {
+    flex-direction: column;
+    align-items: end;
+  
+    .message-text {
+      color: $contrast;
+      background: $primary-color;
+      border-radius: $border-radius $border-radius 4px $border-radius;
+    }
+  }
+  

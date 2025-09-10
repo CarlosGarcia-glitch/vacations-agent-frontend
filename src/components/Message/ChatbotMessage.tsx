@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 
-import { useTranslations } from '../contexts/AppContext';
-import BotAvatar from './Avatar/BotAvatar';
+import { useTranslations } from '../../contexts/AppContext';
+import BotAvatar from '../Avatar/BotAvatar';
+import './Message.scss'
 
 export interface IChat {
   role: 'bot' | 'user';
