@@ -11,7 +11,7 @@ import es from '../translations/es/global.json';
 import AlertPopup from '@/components/AlertPopup/AlertPopup';
 import { AlertColor } from '@mui/material';
 
-import { IChat } from '@/components/ChatbotMessage';
+import { IChat } from '@/components/Message/ChatbotMessage';
 import { User } from '@/models/User';
 
 // Define interface for Alert state
